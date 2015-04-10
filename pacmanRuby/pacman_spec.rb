@@ -3,7 +3,7 @@ require 'rspec'
 describe 'be pacman' do
 
   before() do
-    @pacman = Pacman.new()
+    @pacman = Pacman.new([[1,0]])
   end
 
   it 'pacman should be on a grid' do
@@ -55,7 +55,44 @@ describe 'be pacman' do
       @pacman.tick
     end
 
-    @pacman.location.should == [10,0]
+    @pacman.location.should == [Pacman::END_OF_BOARD,0]
+  end
+
+  it 'pacman should wrap from the top of the grid to the bottom' do
+    @pacman.turn(:north)
+
+    11.times do
+      @pacman.tick
+    end
+
+    @pacman.location.should == [0,-Pacman::END_OF_BOARD]
+  end
+
+  it 'pacman should wrap from the bottom of the grid to the top' do
+    @pacman.turn(:south)
+
+    11.times do
+      @pacman.tick
+    end
+
+    @pacman.location.should == [0,Pacman::END_OF_BOARD]
+  end
+
+  it 'pacman should wrap from the right of the grid to the left' do
+    @pacman.turn(:east)
+
+    11.times do
+      @pacman.tick
+    end
+
+    @pacman.location.should == [-Pacman::END_OF_BOARD, 0]
+  end
+
+  it 'pacman should stop when it hits a wall' do
+
+    @pacman.tick
+
+    @pacman.location.should == [0, 0]
   end
 
 end
@@ -63,21 +100,59 @@ end
 class Pacman
   attr_accessor :location, :direction
 
-  def initialize()
+  def initialize(wall)
+    @walls = wall
     @location = [0, 0]
     @direction = :east
   end
 
+  END_OF_BOARD = 10
+
+  MOVES = {
+    :east => lambda { |this| this.tick_east },
+    :north => lambda { |this| this.tick_north },
+    :west => lambda { |this| this.tick_west },
+    :south => lambda { |this| this.tick_south }
+  }
+
   def tick
-    case @direction
-    when :east
-      @location[0] += 1
-    when :north
-      @location[1] += 1
-    when :west
-      @location[0] -= 1
-    when :south
-      @location[1] -= 1
+    MOVES[@direction].call(self)
+  end
+
+  def move(east_west, north_south)
+    location[0] += east_west
+    location[1] += north_south
+  end
+
+  def tick_south
+    if (@location[1] == -END_OF_BOARD)
+      @location[1] = END_OF_BOARD
+    else
+      move(0, -1)
+    end
+  end
+
+  def tick_west
+    if (@location[0] == -END_OF_BOARD)
+      @location[0] = END_OF_BOARD
+    else
+      move(-1, 0)
+    end
+  end
+
+  def tick_east
+    if (@location[0] == END_OF_BOARD)
+      @location[0] = -END_OF_BOARD
+    else
+      move(1, 0)
+    end
+  end
+
+  def tick_north
+    if (@location[1] == END_OF_BOARD)
+      @location[1] = -END_OF_BOARD
+    else
+      move(0, 1)
     end
   end
 
