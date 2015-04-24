@@ -22,42 +22,55 @@ class Pacman
   end
 
   def move(east_west, north_south)
-    @world[location[0]][location[1]] = nil
-    location[0] += east_west
-    location[1] += north_south
-    if (location[0] < 0)
-      location[0] = @world.size-1
+    original_location = []
+    original_location[0] = @location[0]
+    original_location[1] = @location[1]
+
+    @location[0] += east_west
+    @location[1] += north_south
+    if (@location[0] < 0)
+      @location[0] = @world.size-1
     end
-    if (location[1] < 0)
-      location[1] = @world.size-1
+    if (@location[1] < 0)
+      @location[1] = @world.size-1
     end
-    if (location[1] == @world.size)
-      location[1] = 0
+    if (@location[1] == @world.size)
+      @location[1] = 0
     end
-    if (location[0] == @world.size)
-      location[0] = 0
+    if (@location[0] == @world.size)
+      @location[0] = 0
     end
-    @world[location[0]][location[1]] = self
+
+    if @world[@location[0]][@location[1]] != :wall
+      @world[original_location[0]][original_location[1]] = nil
+      @world[@location[0]][@location[1]] = self
+    else
+      @location[0] = original_location[0]
+      @location[1] = original_location[1]
+    end
   end
 
   def tick_south
-      move(0, -1)
+    move(0, -1)
   end
 
   def tick_west
-      move(-1, 0)
+    move(-1, 0)
   end
 
   def tick_east
-      move(1, 0)
+    move(1, 0)
   end
 
   def tick_north
-      move(0, 1)
+    move(0, 1)
   end
 
   def turn(direction)
-    @direction = direction
+    if @world[@location[0]][@location[1]+1] == :wall and direction == :north
+    elsif @world[@location[0]][@location[1]-1] == :wall and direction == :south
+    else
+      @direction = direction
+    end
   end
-
 end

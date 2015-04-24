@@ -4,7 +4,7 @@ require './pacman'
 describe 'be pacman' do
 
   before() do
-    @world = Array.new(21) {Array.new(21 ) }
+    @world = Array.new(21) { Array.new(21) }
     @pacman = Pacman.new(@world)
   end
 
@@ -57,7 +57,7 @@ describe 'be pacman' do
       @pacman.tick
     end
 
-    @pacman.location.should == [@world.size-1,10]
+    @pacman.location.should == [@world.size-1, 10]
     @world[@world.size-1][10].should == @pacman
   end
 
@@ -68,7 +68,7 @@ describe 'be pacman' do
       @pacman.tick
     end
 
-    @pacman.location.should == [10,0]
+    @pacman.location.should == [10, 0]
     @world[10][0].should == @pacman
   end
 
@@ -79,7 +79,7 @@ describe 'be pacman' do
       @pacman.tick
     end
 
-    @pacman.location.should == [10,@world.size-1]
+    @pacman.location.should == [10, @world.size-1]
     @world[10][@world.size-1].should == @pacman
   end
 
@@ -90,17 +90,27 @@ describe 'be pacman' do
       @pacman.tick
     end
 
-    @pacman.location.should == [0,10]
+    @pacman.location.should == [0, 10]
     @world[0][10].should == @pacman
   end
 
   it 'pacman should stop when it hits a wall' do
-
-    pending
+    @world[11][10] = :wall
     @pacman.tick
-
-    @pacman.location.should == [0, 0]
+    @world[10][10].should == @pacman
+    @pacman.location.should == [10, 10]
   end
 
+  it 'should not be able to turn north toward an adjacent wall' do
+    @world[10][11] = :wall
+    @pacman.turn(:north)
+    @pacman.direction.should == :east
+  end
+
+  it 'should not be able to turn south toward an adjacent wall' do
+    @world[10][9] = :wall
+    @pacman.turn(:south)
+    @pacman.direction.should == :east
+  end
 end
 
