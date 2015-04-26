@@ -57,28 +57,71 @@ class Pacman
 
   def move(east_west, north_south)
     original_location = []
-    original_location[0] = x_axis
-    original_location[1] = y_axis
 
-    @location[0] += east_west
-    @location[1] += north_south
-    if (x_axis < 0)
-      @location[0] = @world.size-1
-    end
-    if (y_axis < 0)
-      @location[1] = @world.size-1
-    end
-    if (y_axis == @world.size)
-      @location[1] = 0
-    end
-    if (x_axis == @world.size)
-      @location[0] = 0
-    end
-
-    check_for_walls(original_location)
+    set_original_location(original_location)
+    initiate_move(east_west, north_south)
+    handle_wrapping
+    handle_walls(original_location)
   end
 
-  def check_for_walls(original_location)
+  def initiate_move(east_west, north_south)
+    @location[0] += east_west
+    @location[1] += north_south
+  end
+
+  def handle_wrapping
+    if (passed_left_boundary?)
+      wrap_to_right
+    end
+    if (passed_bottom_boundary?)
+      wrap_to_top
+    end
+    if (passed_top_boundary?)
+      wrap_to_bottom
+    end
+    if (passed_right_boundary?)
+      wrap_to_left
+    end
+  end
+
+  def wrap_to_top
+    @location[1] = @world.size-1
+  end
+
+  def wrap_to_right
+    @location[0] = @world.size-1
+  end
+
+  def passed_bottom_boundary?
+    y_axis < 0
+  end
+
+  def passed_left_boundary?
+    x_axis < 0
+  end
+
+  def wrap_to_left
+    @location[0] = 0
+  end
+
+  def passed_right_boundary?
+    x_axis == @world.size
+  end
+
+  def wrap_to_bottom
+    @location[1] = 0
+  end
+
+  def passed_top_boundary?
+    y_axis == @world.size
+  end
+
+  def set_original_location(original_location)
+    original_location[0] = x_axis
+    original_location[1] = y_axis
+  end
+
+  def handle_walls(original_location)
     if no_wall_exists
       continue_move(original_location)
     else
@@ -87,8 +130,8 @@ class Pacman
   end
 
   def return_to_original_location(original_location)
-    @location[0] = original_location[0]
-    @location[1] = original_location[1]
+    @location[0] = original_x(original_location)
+    @location[1] = original_y(original_location)
   end
 
   def continue_move(original_location)
@@ -101,7 +144,7 @@ class Pacman
   end
 
   def clear_pacman_location(original_location)
-    @world[original_location[0]][original_location[1]] = nil
+    @world[original_x(original_location)][original_y(original_location)] = nil
   end
 
   def no_wall_exists
@@ -116,5 +159,12 @@ class Pacman
     @location[0]
   end
 
+  def original_y(original_location)
+    original_location[1]
+  end
+
+  def original_x(original_location)
+    original_location[0]
+  end
 
 end
