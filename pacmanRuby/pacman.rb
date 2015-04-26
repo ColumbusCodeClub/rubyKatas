@@ -59,18 +59,10 @@ class Pacman
   end
 
   def handle_wrapping
-    if (passed_left_boundary?)
-      wrap_to_right
-    end
-    if (passed_bottom_boundary?)
-      wrap_to_top
-    end
-    if (passed_top_boundary?)
-      wrap_to_bottom
-    end
-    if (passed_right_boundary?)
-      wrap_to_left
-    end
+    wrap_to_right if (passed_left_boundary?)
+    wrap_to_top if (passed_bottom_boundary?)
+    wrap_to_bottom if (passed_top_boundary?)
+    wrap_to_left if (passed_right_boundary?)
   end
 
   def passed_bottom_boundary?
@@ -139,8 +131,8 @@ class Pacman
   def wall_at_direction(direction)
     return true if wall_north? and turning_north?(direction)
     return true if wall_south? and turning_south?(direction)
-    return true if wall_west?  and turning_west?(direction)
-    return true if wall_east?  and turning_east?(direction)
+    return true if wall_west? and turning_west?(direction)
+    return true if wall_east? and turning_east?(direction)
   end
 
   def turning_east?(direction)
