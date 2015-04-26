@@ -37,61 +37,6 @@ class Pacman
 
   private
 
-  def wall_at_direction(direction)
-    return true if wall_north? and turning_north?(direction)
-    return true if wall_south? and turning_south?(direction)
-    return true if wall_west?  and turning_west?(direction)
-    return true if wall_east?  and turning_east?(direction)
-  end
-
-  def turning_east?(direction)
-    direction == :east
-  end
-
-  def wall_east?
-    @world[x_axis+1][y_axis] == :wall
-  end
-
-  def turning_west?(direction)
-    direction == :west
-  end
-
-  def wall_west?
-    @world[x_axis-1][y_axis] == :wall
-  end
-
-  def wall_south?
-    @world[x_axis][y_axis-1] == :wall
-  end
-
-  def turning_south?(direction)
-    direction == :south
-  end
-
-  def turning_north?(direction)
-    direction == :north
-  end
-
-  def wall_north?
-    @world[x_axis][y_axis+1] == :wall
-  end
-
-
-  def start_location
-    [center(@world), center(@world)]
-  end
-
-  def center(world)
-    (world.size/2)
-  end
-
-  MOVES = {
-      :east => lambda { |this| this.tick_east },
-      :north => lambda { |this| this.tick_north },
-      :west => lambda { |this| this.tick_west },
-      :south => lambda { |this| this.tick_south }
-  }
-
   def move(east_west, north_south)
     original_location = []
 
@@ -100,6 +45,13 @@ class Pacman
     handle_wrapping
     handle_walls(original_location)
   end
+
+  MOVES = {
+      :east => lambda { |this| this.tick_east },
+      :north => lambda { |this| this.tick_north },
+      :west => lambda { |this| this.tick_west },
+      :south => lambda { |this| this.tick_south }
+  }
 
   def initiate_move(east_west, north_south)
     @location[0] += east_west
@@ -182,6 +134,53 @@ class Pacman
 
   def clear_pacman_location(original_location)
     @world[original_x(original_location)][original_y(original_location)] = nil
+  end
+
+  def wall_at_direction(direction)
+    return true if wall_north? and turning_north?(direction)
+    return true if wall_south? and turning_south?(direction)
+    return true if wall_west?  and turning_west?(direction)
+    return true if wall_east?  and turning_east?(direction)
+  end
+
+  def turning_east?(direction)
+    direction == :east
+  end
+
+  def wall_east?
+    @world[x_axis+1][y_axis] == :wall
+  end
+
+  def turning_west?(direction)
+    direction == :west
+  end
+
+  def wall_west?
+    @world[x_axis-1][y_axis] == :wall
+  end
+
+  def wall_south?
+    @world[x_axis][y_axis-1] == :wall
+  end
+
+  def turning_south?(direction)
+    direction == :south
+  end
+
+  def turning_north?(direction)
+    direction == :north
+  end
+
+  def wall_north?
+    @world[x_axis][y_axis+1] == :wall
+  end
+
+  def start_location
+    [center(@world), center(@world)]
+  end
+
+  def center(world)
+    (world.size/2)
   end
 
   def no_wall_exists
