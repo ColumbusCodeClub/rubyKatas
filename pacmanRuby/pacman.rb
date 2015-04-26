@@ -40,8 +40,8 @@ class Pacman
   def wall_at_direction(direction)
     return true if wall_north? and turning_north?(direction)
     return true if wall_south? and turning_south?(direction)
-    return true if wall_west? and turning_west?(direction)
-    return true if  wall_east? and turning_east?(direction)
+    return true if wall_west?  and turning_west?(direction)
+    return true if wall_east?  and turning_east?(direction)
   end
 
   def turning_east?(direction)

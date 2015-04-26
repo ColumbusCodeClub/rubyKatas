@@ -112,5 +112,19 @@ describe 'be pacman' do
     @pacman.turn(:south)
     @pacman.direction.should == :east
   end
+
+  it 'should not be able to turn west toward an adjacent wall' do
+    @world[9][10] = :wall
+    @pacman.turn(:west)
+    @pacman.direction.should == :east
+  end
+
+  it 'should not be able to turn east toward an adjacent wall' do
+    @pacman.turn(:west)
+    @world[11][10] = :wall
+    @pacman.turn(:east)
+    @pacman.direction.should == :west
+  end
+
 end
 
