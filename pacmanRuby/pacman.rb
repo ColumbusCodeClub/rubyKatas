@@ -3,8 +3,8 @@ class Pacman
 
   def initialize(world)
     @world = world
-    @location = [(world.size/2).to_i, (world.size/2).to_i]
-    @world[location[0]][location[1]] = self
+    @location = start_location
+    @world[x_axis][y_axis] = self
     @direction = :east
   end
 
@@ -31,14 +31,22 @@ class Pacman
   end
 
   def turn(direction)
-    if @world[@location[0]][@location[1]+1] == :wall and direction == :north
-    elsif @world[@location[0]][@location[1]-1] == :wall and direction == :south
+    if @world[x_axis][y_axis+1] == :wall and direction == :north
+    elsif @world[x_axis][y_axis-1] == :wall and direction == :south
     else
       @direction = direction
     end
   end
 
   private
+
+  def start_location
+    [center(@world), center(@world)]
+  end
+
+  def center(world)
+    (world.size/2)
+  end
 
   MOVES = {
       :east => lambda { |this| this.tick_east },
@@ -49,21 +57,21 @@ class Pacman
 
   def move(east_west, north_south)
     original_location = []
-    original_location[0] = @location[0]
-    original_location[1] = @location[1]
+    original_location[0] = x_axis
+    original_location[1] = y_axis
 
     @location[0] += east_west
     @location[1] += north_south
-    if (@location[0] < 0)
+    if (x_axis < 0)
       @location[0] = @world.size-1
     end
-    if (@location[1] < 0)
+    if (y_axis < 0)
       @location[1] = @world.size-1
     end
-    if (@location[1] == @world.size)
+    if (y_axis == @world.size)
       @location[1] = 0
     end
-    if (@location[0] == @world.size)
+    if (x_axis == @world.size)
       @location[0] = 0
     end
 
@@ -89,7 +97,7 @@ class Pacman
   end
 
   def enter_new_pacman_location
-    @world[@location[0]][@location[1]] = self
+    @world[x_axis][y_axis] = self
   end
 
   def clear_pacman_location(original_location)
@@ -97,7 +105,15 @@ class Pacman
   end
 
   def no_wall_exists
-    @world[@location[0]][@location[1]] != :wall
+    @world[x_axis][y_axis] != :wall
+  end
+
+  def y_axis
+    @location[1]
+  end
+
+  def x_axis
+    @location[0]
   end
 
 
