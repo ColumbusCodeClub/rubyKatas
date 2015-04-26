@@ -31,14 +31,51 @@ class Pacman
   end
 
   def turn(direction)
-    if @world[x_axis][y_axis+1] == :wall and direction == :north
-    elsif @world[x_axis][y_axis-1] == :wall and direction == :south
-    else
-      @direction = direction
-    end
+    return if wall_at_direction(direction)
+    @direction = direction
   end
 
   private
+
+  def wall_at_direction(direction)
+    return true if wall_north? and turning_north?(direction)
+    return true if wall_south? and turning_south?(direction)
+    return true if wall_west? and turning_west?(direction)
+    return true if  wall_east? and turning_east?(direction)
+  end
+
+  def turning_east?(direction)
+    direction == :east
+  end
+
+  def wall_east?
+    @world[x_axis+1][y_axis] == :wall
+  end
+
+  def turning_west?(direction)
+    direction == :west
+  end
+
+  def wall_west?
+    @world[x_axis-1][y_axis] == :wall
+  end
+
+  def wall_south?
+    @world[x_axis][y_axis-1] == :wall
+  end
+
+  def turning_south?(direction)
+    direction == :south
+  end
+
+  def turning_north?(direction)
+    direction == :north
+  end
+
+  def wall_north?
+    @world[x_axis][y_axis+1] == :wall
+  end
+
 
   def start_location
     [center(@world), center(@world)]
@@ -84,14 +121,6 @@ class Pacman
     end
   end
 
-  def wrap_to_top
-    @location[1] = @world.size-1
-  end
-
-  def wrap_to_right
-    @location[0] = @world.size-1
-  end
-
   def passed_bottom_boundary?
     y_axis < 0
   end
@@ -100,20 +129,28 @@ class Pacman
     x_axis < 0
   end
 
-  def wrap_to_left
-    @location[0] = 0
-  end
-
   def passed_right_boundary?
     x_axis == @world.size
   end
 
-  def wrap_to_bottom
-    @location[1] = 0
-  end
-
   def passed_top_boundary?
     y_axis == @world.size
+  end
+
+  def wrap_to_top
+    @location[1] = @world.size-1
+  end
+
+  def wrap_to_right
+    @location[0] = @world.size-1
+  end
+
+  def wrap_to_left
+    @location[0] = 0
+  end
+
+  def wrap_to_bottom
+    @location[1] = 0
   end
 
   def set_original_location(original_location)
