@@ -11,23 +11,7 @@ class Pacman
   END_OF_BOARD = 10
 
   def tick
-    MOVES[@direction].call(self)
-  end
-
-  def tick_south
-    move(0, -1)
-  end
-
-  def tick_west
-    move(-1, 0)
-  end
-
-  def tick_east
-    move(1, 0)
-  end
-
-  def tick_north
-    move(0, 1)
+    move(@direction)
   end
 
   def turn(direction)
@@ -37,20 +21,20 @@ class Pacman
 
   private
 
-  def move(east_west, north_south)
+  def move(direction)
     original_location = []
 
     set_original_location(original_location)
-    initiate_move(east_west, north_south)
+    initiate_move(DIRECTION_VECTORS[direction][0], DIRECTION_VECTORS[direction][1])
     handle_wrapping
     handle_walls(original_location)
   end
 
-  MOVES = {
-      :east => lambda { |this| this.tick_east },
-      :north => lambda { |this| this.tick_north },
-      :west => lambda { |this| this.tick_west },
-      :south => lambda { |this| this.tick_south }
+  DIRECTION_VECTORS = {
+      :east => [1, 0],
+      :north => [0, 1],
+      :west => [ -1, 0],
+      :south => [0, -1]
   }
 
   def initiate_move(east_west, north_south)
@@ -129,42 +113,10 @@ class Pacman
   end
 
   def wall_at_direction(direction)
-    return true if wall_north? and turning_north?(direction)
-    return true if wall_south? and turning_south?(direction)
-    return true if wall_west? and turning_west?(direction)
-    return true if wall_east? and turning_east?(direction)
-  end
+    x = @location[0] + DIRECTION_VECTORS[direction][0]
+    y = @location[1] + DIRECTION_VECTORS[direction][1]
 
-  def turning_east?(direction)
-    direction == :east
-  end
-
-  def wall_east?
-    @world[x_axis+1][y_axis] == :wall
-  end
-
-  def turning_west?(direction)
-    direction == :west
-  end
-
-  def wall_west?
-    @world[x_axis-1][y_axis] == :wall
-  end
-
-  def wall_south?
-    @world[x_axis][y_axis-1] == :wall
-  end
-
-  def turning_south?(direction)
-    direction == :south
-  end
-
-  def turning_north?(direction)
-    direction == :north
-  end
-
-  def wall_north?
-    @world[x_axis][y_axis+1] == :wall
+    return @world[x][y] == :wall
   end
 
   def start_location

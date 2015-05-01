@@ -1,4 +1,5 @@
 require 'rspec'
+require 'rspec/autorun'
 require './pacman'
 
 describe 'be pacman' do
@@ -124,6 +125,27 @@ describe 'be pacman' do
     @world[11][10] = :wall
     @pacman.turn(:east)
     @pacman.direction.should == :west
+  end
+
+  it 'should not be able to turn in to another wall' do
+    @pacman.tick
+    @pacman.tick
+    @world[12][11] = :wall
+    @pacman.turn(:north)
+    @pacman.direction.should == :east
+  end
+
+  it 'should eat dot' do
+    @world[11][10] = :dot
+    @pacman.tick
+    @pacman.tick
+    @world[11][10].should_not == :dot
+  end
+
+  it 'should increment dots eaten' do
+    @world[11][10] = :dot
+    @pacman.tick
+    @pacman.dots_eaten.should == 1
   end
 
 end
