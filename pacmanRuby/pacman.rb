@@ -1,11 +1,13 @@
 class Pacman
-  attr_accessor :location, :direction
+  attr_accessor :direction
+  attr_reader :dots_eaten
 
   def initialize(world)
     @world = world
     @location = start_location
     @world[x_axis][y_axis] = self
     @direction = :east
+    @dots_eaten = 0
   end
 
   END_OF_BOARD = 10
@@ -27,6 +29,7 @@ class Pacman
     set_original_location(original_location)
     initiate_move(DIRECTION_VECTORS[direction][0], DIRECTION_VECTORS[direction][1])
     handle_wrapping
+    handle_dots
     handle_walls(original_location)
   end
 
@@ -36,6 +39,12 @@ class Pacman
       :west => [ -1, 0],
       :south => [0, -1]
   }
+
+  def handle_dots
+    if @world[@location[0]][@location[1]] == :dot
+      @dots_eaten+=1
+    end
+  end
 
   def initiate_move(east_west, north_south)
     @location[0] += east_west

@@ -58,7 +58,6 @@ describe 'be pacman' do
       @pacman.tick
     end
 
-    @pacman.location.should == [@world.size-1, 10]
     @world[@world.size-1][10].should == @pacman
   end
 
@@ -69,7 +68,6 @@ describe 'be pacman' do
       @pacman.tick
     end
 
-    @pacman.location.should == [10, 0]
     @world[10][0].should == @pacman
   end
 
@@ -80,7 +78,6 @@ describe 'be pacman' do
       @pacman.tick
     end
 
-    @pacman.location.should == [10, @world.size-1]
     @world[10][@world.size-1].should == @pacman
   end
 
@@ -91,7 +88,6 @@ describe 'be pacman' do
       @pacman.tick
     end
 
-    @pacman.location.should == [0, 10]
     @world[0][10].should == @pacman
   end
 
@@ -99,7 +95,6 @@ describe 'be pacman' do
     @world[11][10] = :wall
     @pacman.tick
     @world[10][10].should == @pacman
-    @pacman.location.should == [10, 10]
   end
 
   it 'should not be able to turn north toward an adjacent wall' do
@@ -146,6 +141,19 @@ describe 'be pacman' do
     @world[11][10] = :dot
     @pacman.tick
     @pacman.dots_eaten.should == 1
+  end
+
+  it 'should eat two dots' do
+    @world[11][10] = :dot
+    @world[12][10] = :dot
+    @pacman.tick
+    @pacman.tick
+    @pacman.dots_eaten.should == 2
+  end
+
+  it 'should not eat a dot if no dot is encountered' do
+    @pacman.tick
+    @pacman.dots_eaten.should == 0
   end
 
 end
