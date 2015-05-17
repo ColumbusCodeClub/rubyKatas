@@ -10,8 +10,6 @@ class Pacman
     @dots_eaten = 0
   end
 
-  END_OF_BOARD = 10
-
   def tick
     move(@direction)
   end
